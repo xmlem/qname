@@ -34,13 +34,22 @@ impl Display for QName {
 }
 
 #[derive(Debug, Clone, Copy)]
-pub struct Error;
+#[non_exhaustive]
+pub enum Error {
+    Empty,
+    Start(char),
+    Continue(char),
+}
 
 impl std::error::Error for Error {}
 
 impl Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str("Invalid QName")
+        match self {
+            Self::Empty => write!(f, "Invalid QName: Cannot be empty"),
+            Self::Start(c) => write!(f, "Invalid QName: First char cannot be {c:?}"),
+            Self::Continue(c) => write!(f, "Invalid QName: Cannot contain {c:?}"),
+        }
     }
 }
 
@@ -54,8 +63,8 @@ impl FromStr for QName {
 
 impl QName {
     pub fn new(name: &str) -> Result<QName, Error> {
-        if !is_valid_qname(name) {
-            return Err(Error);
+        if let Some(first_err) = first_qname_error(name) {
+            return Err(first_err);
         }
 
         Ok(match name.split_once(":") {
@@ -105,6 +114,10 @@ impl QName {
 }
 
 pub fn is_valid_qname(input: &str) -> bool {
+    first_qname_error(input).is_some()
+}
+
+fn first_qname_error(input: &str) -> Option<Error> {
     fn is_name_start_char(ch: char) -> bool {
         match ch {
             ':' | 'A'..='Z' | '_' | 'a'..='z' => return true,
@@ -144,13 +157,14 @@ pub fn is_valid_qname(input: &str) -> bool {
     }
 
     let mut chars = input.chars();
-    let is_valid = match chars.next() {
-        Some(ch) => is_name_start_char(ch),
-        None => false,
+    match chars.next() {
+        None => return Some(Error::Empty),
+        Some(ch) => {
+            if !is_name_start_char(ch) {
+                return Some(Error::Start(ch));
+            }
+        }
     };
-    if !is_valid {
-        return false;
-    }
 
-    chars.all(is_name_char)
+    chars.find(|&c| !is_name_char(c)).map(Error::Continue)
 }
