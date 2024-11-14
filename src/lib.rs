@@ -2,7 +2,7 @@
 pub use qname_macro::qname;
 
 #[doc(inline)]
-pub use qname_impl::{QName, Error};
+pub use qname_impl::{Error, QName};
 
 #[cfg(test)]
 mod tests {

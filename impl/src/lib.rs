@@ -10,7 +10,10 @@ use syn::LitStr;
 pub fn qname(item: TokenStream) -> Result<TokenStream, syn::Error> {
     // Implement your proc-macro logic here. :)
     let s: LitStr = syn::parse2(item)?;
-    let _qname: QName = s.value().parse().map_err(|_| syn::Error::new(s.span(), "Invalid QName"))?;
+    let _qname: QName = s
+        .value()
+        .parse()
+        .map_err(|_| syn::Error::new(s.span(), "Invalid QName"))?;
 
     Ok(quote! {
         ::qname::QName::new_unchecked(#s)
