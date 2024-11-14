@@ -2,7 +2,7 @@
 name = "qname"
 version = "0.1.0"
 description = "Type for qualified names in XML"
-repository = "https://github.com/bbqsrc/qname"
+repository = "https://github.com/xmlem/qname"
 license = "Apache-2.0 OR MIT"
 edition = "2021"
 
@@ -13,4 +13,3 @@ qname-impl = { version = "=0.1.0", path = "impl" }
 [workspace]
 members = [".", "impl", "macro"]
 default-members = [".", "impl"]
-
