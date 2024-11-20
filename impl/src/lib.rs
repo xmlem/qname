@@ -62,6 +62,7 @@ impl FromStr for QName {
 }
 
 impl QName {
+    /// Attempt to parse a string as a qualified name.
     pub fn new(name: &str) -> Result<QName, Error> {
         if let Some(first_err) = first_qname_error(name) {
             return Err(first_err);
@@ -81,9 +82,14 @@ impl QName {
         })
     }
 
+    /// Create a qname from a known-valid qualified name.
+    ///
+    /// ## Panics
+    ///
+    /// This function panics if the given name is not valid.
     pub fn new_unchecked(name: &str) -> QName {
-        if !is_valid_qname(name) {
-            panic!("Input '{name}' is not a valid QName.");
+        if let Some(err) = first_qname_error(name) {
+            panic!("Input '{name}' is not a valid QName: {err}.");
         }
 
         match name.split_once(":") {
