@@ -1,6 +1,6 @@
 [package]
 name = "qname-macro"
-version = "0.1.0"
+version = "0.2.0"
 description = "Type for qualified names in XML - macro"
 repository = "https://github.com/xmlem/qname"
 license = "Apache-2.0 OR MIT"
@@ -10,7 +10,7 @@ edition = "2021"
 proc-macro = true
 
 [dependencies]
-qname-impl = { version = "=0.1.0", path = "../impl" }
+qname-impl = { version = "=0.2.0", path = "../impl" }
 syn = { version = "1", features = ["full", "extra-traits"] }
 quote = "1"
 proc-macro2 = "1"

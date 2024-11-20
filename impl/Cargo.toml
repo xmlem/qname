@@ -1,6 +1,6 @@
 [package]
 name = "qname-impl"
-version = "0.1.0"
+version = "0.2.0"
 description = "Type for qualified names in XML - implementation"
 repository = "https://github.com/xmlem/qname"
 license = "Apache-2.0 OR MIT"
