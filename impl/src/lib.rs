@@ -61,6 +61,14 @@ impl FromStr for QName {
     }
 }
 
+impl TryFrom<&'_ str> for QName {
+    type Error = Error;
+
+    fn try_from(s: &str) -> Result<Self, Error> {
+        QName::new(s)
+    }
+}
+
 impl QName {
     /// Attempt to parse a string as a qualified name.
     pub fn new(name: &str) -> Result<QName, Error> {
