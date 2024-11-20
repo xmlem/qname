@@ -133,25 +133,22 @@ pub fn is_valid_qname(input: &str) -> bool {
 
 fn first_qname_error(input: &str) -> Option<Error> {
     fn is_name_start_char(ch: char) -> bool {
-        match ch {
-            ':' | 'A'..='Z' | '_' | 'a'..='z' => return true,
-            _ => {}
-        }
-        match ch as u32 {
-            0xC0..=0xD6
-            | 0xD8..=0xF6
-            | 0xF8..=0x2FF
-            | 0x370..=0x37D
-            | 0x37F..=0x1FFF
-            | 0x200C..=0x200D
-            | 0x2070..=0x218F
-            | 0x2C00..=0x2FEF
-            | 0x3001..=0xD7FF
-            | 0xF900..=0xFDCF
-            | 0xFDF0..=0xFFFD
-            | 0x10000..=0xEFFFF => true,
-            _ => false,
-        }
+        matches!(ch, ':'
+            | 'A'..='Z'
+            | '_'
+            | 'a'..='z'
+            | '\u{C0}'..='\u{D6}'
+            | '\u{D8}'..='\u{F6}'
+            | '\u{F8}'..='\u{2FF}'
+            | '\u{370}'..='\u{37D}'
+            | '\u{37F}'..='\u{1FFF}'
+            | '\u{200C}'..='\u{200D}'
+            | '\u{2070}'..='\u{218F}'
+            | '\u{2C00}'..='\u{2FEF}'
+            | '\u{3001}'..='\u{D7FF}'
+            | '\u{F900}'..='\u{FDCF}'
+            | '\u{FDF0}'..='\u{FFFD}'
+            | '\u{10000}'..='\u{EFFFF}')
     }
 
     fn is_name_char(ch: char) -> bool {
