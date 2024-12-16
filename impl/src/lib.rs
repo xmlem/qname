@@ -34,8 +34,10 @@ impl Display for QName {
 }
 
 #[derive(Debug, Clone, Copy)]
-#[non_exhaustive]
-pub enum Error {
+pub struct Error(ErrorInner);
+
+#[derive(Debug, Clone, Copy)]
+enum ErrorInner {
     Empty,
     Start(char),
     Continue(char),
@@ -45,10 +47,10 @@ impl std::error::Error for Error {}
 
 impl Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            Self::Empty => write!(f, "Invalid QName: Cannot be empty"),
-            Self::Start(c) => write!(f, "Invalid QName: First char cannot be {c:?}"),
-            Self::Continue(c) => write!(f, "Invalid QName: Cannot contain {c:?}"),
+        match self.0 {
+            ErrorInner::Empty => write!(f, "Invalid QName: Cannot be empty"),
+            ErrorInner::Start(c) => write!(f, "Invalid QName: First char cannot be {c:?}"),
+            ErrorInner::Continue(c) => write!(f, "Invalid QName: Cannot contain {c:?}"),
         }
     }
 }
@@ -169,13 +171,15 @@ fn first_qname_error(input: &str) -> Option<Error> {
 
     let mut chars = input.chars();
     match chars.next() {
-        None => return Some(Error::Empty),
+        None => return Some(Error(ErrorInner::Empty)),
         Some(ch) => {
             if !is_name_start_char(ch) {
-                return Some(Error::Start(ch));
+                return Some(Error(ErrorInner::Start(ch)));
             }
         }
     };
 
-    chars.find(|&c| !is_name_char(c)).map(Error::Continue)
+    chars
+        .find(|&c| !is_name_char(c))
+        .map(|ch| Error(ErrorInner::Continue(ch)))
 }
